@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
@@ -44,6 +45,8 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            //Ktor for android
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -54,6 +57,17 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            //ktor and koin
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            //Navigation
+            implementation(libs.navigation.compose)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -61,6 +75,20 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            //ktor
+            implementation(libs.ktor.client.okhttp)
+        }
+        iosMain.dependencies {
+            //ktor
+            implementation(libs.ktor.client.darwin)
+        }
+        jsMain.dependencies {
+            //ktor
+            implementation(libs.ktor.client.core)
+        }
+        wasmJsMain.dependencies {
+            //ktor
+            implementation(libs.ktor.client.core)
         }
     }
 }

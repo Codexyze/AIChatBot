@@ -7,3 +7,4 @@ class IOSPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
+actual val isDesktop: Boolean = false

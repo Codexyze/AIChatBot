@@ -112,3 +112,7 @@ logs/
 .env.*.local
 
 gradle.properties
+
+Constants
+/Constants
+/GeminiConstnats
