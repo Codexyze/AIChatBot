@@ -43,12 +43,13 @@ kotlin {
     
     sourceSets {
         androidMain.dependencies {
+            // Android-only UI helpers and the OkHttp Ktor engine
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
-            //Ktor for android
             implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
+            // Shared Compose UI and lifecycle support
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
@@ -57,15 +58,19 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            //ktor and koin
+
+            // Shared networking and JSON serialization
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.serialization.json)
+
+            // Dependency injection
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            //Navigation
+
+            // Shared navigation for Compose screens
             implementation(libs.navigation.compose)
 
         }
@@ -73,21 +78,21 @@ kotlin {
             implementation(libs.kotlin.test)
         }
         jvmMain.dependencies {
+            // Desktop runtime support and the JVM Ktor engine
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
-            //ktor
             implementation(libs.ktor.client.okhttp)
         }
         iosMain.dependencies {
-            //ktor
+            // iOS Ktor engine
             implementation(libs.ktor.client.darwin)
         }
         jsMain.dependencies {
-            //ktor
+            // Web client networking support
             implementation(libs.ktor.client.core)
         }
         wasmJsMain.dependencies {
-            //ktor
+            // WebAssembly client networking support
             implementation(libs.ktor.client.core)
         }
     }

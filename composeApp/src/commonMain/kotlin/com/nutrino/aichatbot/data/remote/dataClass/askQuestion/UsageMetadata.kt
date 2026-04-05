@@ -4,6 +4,9 @@ package com.nutrino.aichatbot.data.remote.dataClass.askQuestion
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Serializable token usage metadata returned by the Gemini API.
+ */
 @Serializable
 data class UsageMetadata(
     @SerialName("candidatesTokenCount")

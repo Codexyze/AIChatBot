@@ -38,11 +38,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nutrino.aichatbot.isDesktop
-import com.nutrino.aichatbot.data.remote.dataClass.askQuestion.AskQuestionRequest
-import com.nutrino.aichatbot.data.remote.dataClass.askQuestion.AskQuestionResponse
-import com.nutrino.aichatbot.data.remote.dataClass.askQuestion.Content
-import com.nutrino.aichatbot.data.remote.dataClass.askQuestion.Part
 import com.nutrino.aichatbot.domain.common.ResultState
+import com.nutrino.aichatbot.domain.model.askQuestion.AskQuestionRequest
+import com.nutrino.aichatbot.domain.model.askQuestion.AskQuestionResponse
+import com.nutrino.aichatbot.domain.model.askQuestion.Content
+import com.nutrino.aichatbot.domain.model.askQuestion.Part
 import com.nutrino.aichatbot.domain.repository.GeminiRepository
 import com.nutrino.aichatbot.domain.useCases.AskQuestionWithPromptUseCase
 import com.nutrino.aichatbot.presentation.states.AskQuestionsUIState
@@ -51,6 +51,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Renders the main Ask Question screen.
+ *
+ * This composable wires together the prompt input, loading state, message history, and
+ * response handling. It relies on the shared `GeminiViewModel` to send the user prompt and
+ * collect state updates. The screen also adapts its layout width for desktop targets.
+ *
+ * @param viewModel The ViewModel that owns the Ask Question state and network action.
+ */
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun AskQuestionScreen(
@@ -200,6 +209,16 @@ fun AskQuestionScreen(
     }
 }
 
+/**
+ * Renders the bottom composer used for entering and sending a prompt.
+ *
+ * @param prompt The current text entered by the user.
+ * @param onPromptChange Callback invoked whenever the prompt text changes.
+ * @param isLoading Whether the screen is currently waiting for a network response.
+ * @param isDesktop Whether the current target should use desktop-style spacing.
+ * @param contentMaxWidth The maximum width allowed for the inner content area.
+ * @param onSend Callback invoked when the user taps the send button.
+ */
 @Composable
 private fun ChatComposer(
     prompt: String,
@@ -257,6 +276,12 @@ private fun ChatComposer(
     }
 }
 
+/**
+ * Displays a single chat bubble for a user, assistant, or error message.
+ *
+ * @param message The message data to render.
+ * @param maxBubbleWidth The maximum width permitted for the bubble content.
+ */
 @Composable
 private fun ChatBubble(message: ChatMessage, maxBubbleWidth: Dp) {
     val isUser = message.role == ChatRole.USER
@@ -292,6 +317,11 @@ private fun ChatBubble(message: ChatMessage, maxBubbleWidth: Dp) {
     }
 }
 
+/**
+ * Displays a loading bubble while the app waits for Gemini to respond.
+ *
+ * @param maxBubbleWidth The maximum width permitted for the loading bubble content.
+ */
 @Composable
 private fun LoadingBubble(maxBubbleWidth: Dp) {
     Row(
@@ -342,6 +372,12 @@ private val geminiDarkColorScheme = darkColorScheme(
     onSecondaryContainer = Color(0xFFE8EAED)
 )
 
+/**
+ * Centers content within the available width and constrains it to a comfortable maximum size.
+ *
+ * @param contentMaxWidth The widest size the content should occupy.
+ * @param content The composable content to display inside the centered container.
+ */
 @Composable
 private fun CenteredContent(contentMaxWidth: Dp, content: @Composable () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth()) {
@@ -356,24 +392,49 @@ private fun CenteredContent(contentMaxWidth: Dp, content: @Composable () -> Unit
     }
 }
 
+/**
+ * Constrains a message bubble to a readable maximum width.
+ *
+ * @param maxWidth The maximum width the bubble should occupy.
+ * @return A modifier that applies the width constraints.
+ */
 private fun Modifier.chatBubbleMaxWidth(maxWidth: Dp): Modifier {
     return this
         .fillMaxWidth(fraction = 0.9f)
         .widthIn(max = maxWidth)
 }
 
+/**
+ * Stores the minimal data required to render a chat entry in the UI.
+ *
+ * @property id Stable identifier used for list keys and scrolling logic.
+ * @property role Identifies whether the message came from the user, assistant, or an error path.
+ * @property text The message content shown inside the bubble.
+ */
 private data class ChatMessage(
     val id: Long,
     val role: ChatRole,
     val text: String
 )
 
+/**
+ * Enumerates the message roles that the chat screen can render.
+ */
 private enum class ChatRole {
     USER,
     ASSISTANT,
     ERROR
 }
 
+/**
+ * Builds the domain request object from raw prompt text.
+ *
+ * The function wraps the prompt in the request structure expected by the domain layer and the
+ * repository mapper.
+ *
+ * @param prompt The raw text entered by the user.
+ * @return A domain request object containing the prompt text.
+ */
 private fun buildAskQuestionRequest(prompt: String): AskQuestionRequest {
     return AskQuestionRequest(
         contents = listOf(
@@ -386,6 +447,12 @@ private fun buildAskQuestionRequest(prompt: String): AskQuestionRequest {
     )
 }
 
+/**
+ * Preview entry for the Ask Question screen.
+ *
+ * The preview uses a lightweight fake repository so the screen can render without making
+ * a network call.
+ */
 @Preview
 @Composable
 private fun AskQuestionScreenPreview() {

@@ -12,6 +12,12 @@ import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
+/**
+ * Application-wide Koin module for the shared Compose Multiplatform app.
+ *
+ * This module wires together the network client, repository, use case, and ViewModel so
+ * common code can resolve dependencies consistently on every target.
+ */
 val appModules = module {
     single<GeminiRepository> {
         GeminiRepoImpl(httpClient = get())
@@ -26,6 +32,15 @@ val appModules = module {
 
 }
 private fun getKtorClient(): HttpClient{
+
+/**
+ * Creates the configured Ktor [HttpClient] used by the repository layer.
+ *
+ * The client is configured with generous timeouts and permissive JSON parsing so the app can
+ * tolerate unknown fields from the Gemini API while still remaining stable.
+ *
+ * @return A ready-to-use Ktor HTTP client instance.
+ */
      val httpclient= HttpClient{
         install(HttpTimeout) {
             requestTimeoutMillis = 300_000 // 120 seconds (2 minutes)
